@@ -1,1 +1,3 @@
-# 2406_azure_support_engineer
+# 2406 Azure Support Engineer
+
+Training repo containing examples, exerises, projects, etc
