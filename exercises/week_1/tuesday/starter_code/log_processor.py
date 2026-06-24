@@ -20,14 +20,26 @@ def parse_log_line(line):
         "latency": 45
     }
     """
+
     # TODO: Split the log line and extract the IP, Method, Path, Status Code, and Latency (last element).
     # Tip: Use line.split() and string slicing. Remember to cast status and latency to integers!
-    pass
+
+    fields = line.split()
+
+    return {
+        "ip": fields[0],
+        "method": fields[5].replace('"', ''),
+        "path": fields[6],
+        "status": int(fields[8]),
+        "latency": int(fields[9])
+    }
+
 
 def analyze_logs(file_path):
     """
     Reads the logs file, parses each line, and aggregates metrics using lists, sets, and dicts.
     """
+
     all_requests = []
     unique_ips = set()
     status_counts = {}
@@ -41,24 +53,61 @@ def analyze_logs(file_path):
     # 4. Increment the status code counts in status_counts (dict)
     # 5. If latency is greater than 100ms, add to slow_requests (list)
 
+    with open(file_path, "r") as file:
+        for line in file:
+            request = parse_log_line(line)
+
+            # 1. Add request to list
+            all_requests.append(request)
+
+            # 2. Add IP to set
+            unique_ips.add(request["ip"])
+
+            # 3. Count status codes
+            status = request["status"]
+            if status in status_counts:
+                status_counts[status] += 1
+            else:
+                status_counts[status] = 1
+
+            # 4. Filter slow requests
+            if request["latency"] > 100:
+                slow_requests.append(request)
+
     print("=========================================")
     print("SRE LOG ANALYSIS SUMMARY REPORT")
     print("=========================================")
+
     print(f"Total Requests Processed: {len(all_requests)}")
     print(f"Unique Client IPs: {len(unique_ips)}")
     print(f"HTTP Status Code Breakdown: {status_counts}")
     print(f"Slow Requests (>100ms) Count: {len(slow_requests)}")
+
     print("-----------------------------------------")
     print("Detailed List of Unique Client IPs:")
-    # TODO: Print sorted list of unique client IPs
-    
+
+    # Print sorted list of unique client IPs
+    for ip in sorted(unique_ips):
+        print(ip)
+
     print("\nDetailed List of Slow Requests:")
-    # TODO: Print the path and latency of each slow request
+
+    # Print the path and latency of each slow request
+    for req in slow_requests:
+        print(
+            f"Method: {req['method']} | "
+            f"Path: {req['path']} | "
+            f"Latency: {req['latency']}ms | "
+            f"Status: {req['status']}"
+        )
+
 
 if __name__ == "__main__":
     import os
+
     # Find logs.txt relative to this script
     logs_file = os.path.join(os.path.dirname(__file__), "logs.txt")
+
     if os.path.exists(logs_file):
         analyze_logs(logs_file)
     else:
