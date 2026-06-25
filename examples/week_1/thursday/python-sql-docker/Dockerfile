@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+# Install compilation essentials for postgres drivers if necessary
+RUN apt-get update && apt-get install -y libpq-dev gcc && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+COPY requirements.txt .
+run pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8081
+
+CMD ["python", "-m", "app.app"]
