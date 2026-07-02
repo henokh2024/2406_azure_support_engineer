@@ -4,6 +4,7 @@ from azure.storage.blob import BlobServiceClient, BlobClient
 
 account_name = "stsecurestore01"
 container_name = "deployments"
+blob_name = "health_check.txt"
 
 # Method 1: Authenticating via account access key (static, high privelege)
 def connect_using_access_key():
@@ -15,12 +16,27 @@ def connect_using_access_key():
     try:
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
         print("success: initialized blobserviceclient using account access key")
-        blob_client = blob_service_client.get_blob_client(container=container_name, blob="health_check.txt")
+        blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
         blob_client.upload_blob("System Status: Green", overwrite=True)
     except Exception as e:
         print(f"Error connecting: {e}")
     print()
 
+# Method 2: Authenticating via Shared Access Signature (SAS) Token (Time-Bound)
+def connect_using_sas_token():
+    print("--- Connecting using SAS Token ---")
+    # SAS tokens are appended to the URL query string
+    sas_token = os.environ.get("AZURE_STORAGE_SAS")
+    blob_url = f"https://{account_name}.blob.core.windows.net/{container_name}/{blob_name}{sas_token}"
+
+    try:
+        blob_client = BlobClient.from_blob_url(blob_url)
+        print("Success: Initialized BlobClient using time-bound SAS Token")
+        # blob_client.upload_blob("Hello", overwrite=True)
+    except Exception as e:
+        print(f"Error connecting: {e}")
+
 if __name__ == "__main__":
     print("=== Azure Blob Authentication Configuration Demo ===")
-    connect_using_access_key()
+    # connect_using_access_key()
+    connect_using_sas_token()
