@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    container_name: app-web
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      # Private IP of the database server VM (to be updated at runtime)
+      DB_HOST: 10.0.2.4
+      DB_PORT: 5432
+      DB_NAME: inventory
+      DB_USER: dbuser
+      DB_PASSWORD: SecretLocalPassword2026!
+      # Authentication Modes: 'sql-auth' (default for local VM communication)
+      # or 'azure-ad' (when connecting to Azure Database for PostgreSQL with Managed Identity)
+      DB_AUTH_MODE: sql-auth
+      # If using a service principal for Azure AD local testing:
+      # AZURE_CLIENT_ID: "optional-client-id"
+      # AZURE_TENANT_ID: "optional-tenant-id"
+      # AZURE_CLIENT_SECRET: "optional-client-secret"
