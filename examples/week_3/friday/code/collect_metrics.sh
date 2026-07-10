@@ -16,6 +16,6 @@ echo "[INFO] Uploading system metrics payload privately..."
 curl -X PUT -H "x-ms-blob-type: BlockBlob" \
      -H "Content-Type: application/json" \
      -T "$METRICS_FILE" \
-     "<https://$>{STORAGE_ACCOUNT}.blob.core.windows.net/${CONTAINER}/${METRICS_FILE}${SAS_TOKEN}"
+     "https://${STORAGE_ACCOUNT}.blob.core.windows.net/${CONTAINER}/${METRICS_FILE}${SAS_TOKEN}"
 
 echo -e "\n[SUCCESS] Script execution complete."
