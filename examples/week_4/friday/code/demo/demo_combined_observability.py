@@ -570,3 +570,17 @@ def main():
             audit_azure_logs()
         elif choice == "4":
             run_telemetry_rca()
+        elif choice == "5":
+            view_configs()
+        elif choice == "6":
+            print(f"\n{GREEN}Exiting. Observability Demo closed.{NC}")
+            break
+        else:
+            print(f"{RED}Invalid option. Please enter a number between 1 and 6.{NC}")
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print(f"\n\n{RED}Simulation interrupted. Exiting.{NC}")
+        sys.exit(0)

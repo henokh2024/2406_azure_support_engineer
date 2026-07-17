@@ -102,3 +102,7 @@ def action_group_webhook(payload: dict):
     print(f"ACTION GROUP : {payload['actionGroup']} dispatched notification to: sre-oncall@company.com")
     print("===============================================================")
     return {"status": "Notification routed"}
+
+if __name__ == "__main__":
+    print("Starting SRE Metric Alerts & Action Group App...")
+    uvicorn.run(app, host="0.0.0.0", port=8000)
